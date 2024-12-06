@@ -15,7 +15,11 @@ const input: Message[] = [
 const App = () => {
   const [tiles, setTiles] = useState<Message[]>(input);
   const [isSorted, setIsSorted] = useState(false);
+  const [isModalOpen,setIsModalOpen] = useState(false)
 
+  const handleModalOpen = () => setIsModalOpen(true)
+  const handleModalClose = () => setIsModalOpen(false)
+ 
 
   const handleDrop = (e: React.DragEvent, targetIndex: number) => {
     const draggedIndex = parseInt(e.dataTransfer.getData("draggedIndex"));
@@ -45,13 +49,15 @@ const App = () => {
     setTiles([...tiles, newTile]);
   };
 
+
+
   return (
    <div>
     <div>
       <Header/>
     </div>
     <div className="container mx-auto px-8 py-2">
-      <header className="flex justify-between p-4">
+      <header className="flex justify-end gap-4 p-4">
         <button
           onClick={resetOrder}
           className="bg-pink-500 px-4 py-2 text-white rounded hover:bg-pink-600"
@@ -64,10 +70,16 @@ const App = () => {
         >
           Sorted Order
         </button>
+        <button
+          onClick={handleModalOpen}
+          className="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600"
+        >
+          Add New Tile
+        </button>
       </header>
 
       <div>
-        <AddTileForm addTile={addTile} />
+       {isModalOpen &&  <AddTileForm addTile={addTile} isOpen={isModalOpen} isClose={handleModalClose}/>}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
