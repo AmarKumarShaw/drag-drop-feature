@@ -1,5 +1,5 @@
 import React from "react";
-import Tile from "./Tile"; 
+import Tile from "./Tile";
 import { handleDragStart, handleDragEnd, handleDrop } from "../utils/utils";
 
 type YearGroup = {
@@ -8,9 +8,9 @@ type YearGroup = {
 };
 
 type DraggedTile = {
-    year: string;
-    index: number;
-  };
+  year: string;
+  index: number;
+};
 
 type TileDraggableProps = {
   newTile: YearGroup[];
@@ -19,6 +19,10 @@ type TileDraggableProps = {
 
 const TileDraggable = ({ newTile, setNewTile }: TileDraggableProps) => {
   const [draggedTile, setDraggedTile] = React.useState<DraggedTile | null>(null);
+  const [dragOverTile, setDragOverTile] = React.useState<{
+    year: string;
+    index: number;
+  } | null>(null);
 
   return (
     <div className="mt-6">
@@ -37,6 +41,10 @@ const TileDraggable = ({ newTile, setNewTile }: TileDraggableProps) => {
                   draggedTile?.year === group.year &&
                   draggedTile?.index === tileIndex;
 
+                const isDragOver =
+                  dragOverTile?.year === group.year &&
+                  dragOverTile?.index === tileIndex;
+
                 return (
                   <div
                     key={tileIndex}
@@ -44,15 +52,36 @@ const TileDraggable = ({ newTile, setNewTile }: TileDraggableProps) => {
                     onDragStart={(e) =>
                       handleDragStart(e, group.year, tileIndex, setDraggedTile)
                     }
-                    onDragEnd={() => handleDragEnd(setDraggedTile)}
-                    onDrop={(e) =>
-                      handleDrop(e, tileIndex, group.year, draggedTile, newTile, setNewTile)
-                    }
-                    onDragOver={(e) => e.preventDefault()}
-                    className={`rounded-lg p-2 transition-opacity duration-200 ease-in-out cursor-move hover:scale-105 active:scale-95 ${
-                      isDragged ? "opacity-20" : "opacity-100"
-                    }`}
+                    onDragEnd={() => {
+                      handleDragEnd(setDraggedTile);
+                      setDragOverTile(null);
+                    }}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setDragOverTile({ year: group.year, index: tileIndex });
+                    }}
+                    onDrop={(e) => {
+                      handleDrop(
+                        e,
+                        tileIndex,
+                        group.year,
+                        draggedTile,
+                        newTile,
+                        setNewTile
+                      );
+                      setDragOverTile(null);
+                    }}
+                    className={`relative rounded-lg p-2 transition-all duration-300 ease-in-out cursor-move ${
+                      isDragged ? "opacity-20 scale-95" : "opacity-100 scale-100"
+                    } ${
+                      isDragOver && !isDragged
+                        ? "bg-gray-200 border border-dashed border-pink-500"
+                        : "bg-white"
+                    } hover:scale-105 active:scale-95`}
                   >
+                    {isDragOver && !isDragged && (
+                      <div className="absolute inset-0 bg-pink-100 opacity-50 pointer-events-none"></div>
+                    )}
                     <Tile date={tile.date} message={tile.message} />
                   </div>
                 );
