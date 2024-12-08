@@ -63,12 +63,12 @@ const DragDrop = () => {
     if (yearGroup) {
       const draggedTile = yearGroup.entries[draggedIndex];
       const targetTile = yearGroup.entries[targetIndex];
+
       yearGroup.entries[draggedIndex] = targetTile;
       yearGroup.entries[targetIndex] = draggedTile;
 
       setNewTile(updatedNewTile);
     }
-
     setDraggedTile(null);
   };
 
@@ -87,7 +87,6 @@ const DragDrop = () => {
           (item) => item.date === tile.date && item.message === tile.message
         )
     );
-
     setTiles([...originalTiles, ...newTiles]);
   };
 
@@ -100,7 +99,7 @@ const DragDrop = () => {
     return tiles.reduce<YearGroup[]>((acc, item) => {
       const year = item.date.split("-")[0];
       const yearGroup = acc.find((group) => group.year === year);
-  
+
       if (yearGroup) {
         yearGroup.entries.push({ date: item.date, message: item.message });
       } else {
@@ -109,16 +108,15 @@ const DragDrop = () => {
           entries: [{ date: item.date, message: item.message }],
         });
       }
-  
       return acc;
     }, []);
   };
 
   useEffect(() => {
     if (tiles.length) {
-        const groupedTiles = groupTilesByYear(tiles);
-        setNewTile(groupedTiles);
-      }
+      const groupedTiles = groupTilesByYear(tiles);
+      setNewTile(groupedTiles);
+    }
   }, [tiles]);
 
   return (
@@ -158,7 +156,9 @@ const DragDrop = () => {
                       <div
                         key={tileIndex}
                         draggable
-                        onDragStart={(e) => handleDragStart(e, group.year, tileIndex)}
+                        onDragStart={(e) =>
+                          handleDragStart(e, group.year, tileIndex)
+                        }
                         onDragEnd={handleDragEnd}
                         onDrop={(e) => handleDrop(e, tileIndex, group.year)}
                         onDragOver={(e) => e.preventDefault()}
