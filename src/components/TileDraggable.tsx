@@ -1,7 +1,6 @@
-// TileDraggable.tsx
 import React from "react";
-import Tile from "./Tile"; // Assuming Tile component is already defined
-import { handleDragStart, handleDragEnd, handleDrop } from "../utils/utils"; // Import utility functions
+import Tile from "./Tile"; 
+import { handleDragStart, handleDragEnd, handleDrop } from "../utils/utils";
 
 type YearGroup = {
   year: string;
